@@ -14,11 +14,149 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model User {
-    id        String   @id @default(cuid())
-    username  String?  @unique
-    email     String?  @unique
-    password  String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Role {
+    roleId String   @id @default(cuid())
+    role   UserRole
+    Users  User[]
 }
+
+enum UserRole {
+    manager
+    employee
+    projectManager
+    ceo
+    accountant
+}
+
+model User {
+    id                String              @id @default(cuid())
+    username          String?             @unique
+    email             String?             @unique
+    password          String
+    createdAt         DateTime            @default(now())
+    updatedAt         DateTime            @updatedAt
+    role              Role                @relation(fields: [roleId], references: [roleId])
+    roleId            String
+    PurchaseOrderLogs PurchaseOrderLogs[]
+
+    userPrepare          PurchaseOrder[]        @relation(name: "userPrepare")
+    userReview           PurchaseOrder[]        @relation(name: "userReview")
+    userApprove          PurchaseOrder[]        @relation(name: "userApprove")
+    PurchaseOrderDetails PurchaseOrderDetails[]
+}
+
+model PurchaseOrder {
+    purchaseOrderId String @id @default(cuid())
+    status          Status @default(draft)
+
+    userPrepareId String
+    userPrepare   User   @relation(fields: [userPrepareId], references: [id], name: "userPrepare")
+
+    userReviewId String
+    userReview   User   @relation(fields: [userReviewId], references: [id], name: "userReview")
+
+    userApproveId        String
+    userApprove          User                   @relation(fields: [userApproveId], references: [id], name: "userApprove")
+    PurchaseOrderDetails PurchaseOrderDetails[]
+}
+
+model PurchaseOrderLogs {
+    purchaseOrderLogsId String               @id @default(cuid())
+    action              PurchaseOrderActions
+    user                User                 @relation(fields: [userId], references: [id])
+    userId              String
+}
+
+enum PurchaseOrderActions {
+    create
+    review
+    reject
+    update
+    complete
+}
+
+enum Status {
+    draft
+    toReview
+    toApprove
+    rejected
+    approved
+    paymnetInProgress
+    completed
+}
+
+model PurchaseOrderDetails {
+    purchaseOrderDetailId String        @id @default(cuid())
+    comment               String?
+    createdAt             DateTime      @default(now())
+    installment           Boolean       @default(false)
+    purchaseOrderId       String
+    purchaseOrder         PurchaseOrder @relation(fields: [purchaseOrderId], references: [purchaseOrderId])
+
+    projectId String
+    project   Project @relation(fields: [projectId], references: [projectId])
+
+    companyId String
+    company   Company @relation(fields: [companyId], references: [companyId])
+
+    paymentMethod PaymentMethod
+
+    nameOnCheque String?
+    iban         String?
+    cliq         String?
+
+    contactName   String?
+    contactNumber String?
+
+    projectManagerId String?
+    projectManager   User?   @relation(fields: [projectManagerId], references: [id])
+
+    currency   Currency @default(JOD)
+    totalAmout Float
+
+    PurchaseOrderItems PurchaseOrderItem[]
+}
+
+enum Currency {
+    JOD
+    USD
+    EUR
+    GBP
+    AED
+}
+
+enum PaymentMethod {
+    bankTransfer
+    cheque
+    cash
+    online
+}
+
+model Project {
+    projectId            String                 @id @default(cuid())
+    projectName          String                 @unique
+    PurchaseOrderDetails PurchaseOrderDetails[]
+}
+
+model Company {
+    companyId            String                 @id @default(cuid())
+    companytName         String                 @unique
+    PurchaseOrderDetails PurchaseOrderDetails[]
+}
+
+model PurchaseOrderItem {
+    purchaseOrderItemId String   @id @default(cuid())
+    description         String?
+    priceNoTax          Float
+    priceTax            Float
+    taxAmmount          Float
+    paid                Boolean  @default(false)
+    date                DateTime
+    note                String
+
+    purchaseOrderDetailId String
+    purchaseOrderDetail   PurchaseOrderDetails @relation(fields: [purchaseOrderDetailId], references: [purchaseOrderDetailId])
+}
+
+// TAX  0,5,7,10,16,26
+

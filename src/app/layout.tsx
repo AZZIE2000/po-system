@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "@/trpc/react";
 import { SessionProvider } from "next-auth/react";
 import Providers from "./_components/providers";
+import { getServerAuthSession } from "@/server/auth";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -13,9 +14,12 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const session = await getServerAuthSession();
+  console.log(session);
+
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
