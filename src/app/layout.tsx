@@ -1,12 +1,11 @@
 import "@/styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
-
 import { TRPCReactProvider } from "@/trpc/react";
-import { SessionProvider } from "next-auth/react";
 import Providers from "./_components/providers";
-import { getServerAuthSession } from "@/server/auth";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -17,14 +16,15 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const session = await getServerAuthSession();
-  console.log(session);
-
+  
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
         <TRPCReactProvider>
-          <Providers>{children}</Providers>
+          <Providers>
+            {children}
+            <ToastContainer />
+          </Providers>
         </TRPCReactProvider>
       </body>
     </html>

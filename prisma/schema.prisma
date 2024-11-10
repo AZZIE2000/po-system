@@ -58,13 +58,17 @@ model PurchaseOrder {
     userApproveId        String
     userApprove          User                   @relation(fields: [userApproveId], references: [id], name: "userApprove")
     PurchaseOrderDetails PurchaseOrderDetails[]
+    PurchaseOrderLogs    PurchaseOrderLogs[]
 }
 
 model PurchaseOrderLogs {
-    purchaseOrderLogsId String               @id @default(cuid())
-    action              PurchaseOrderActions
-    user                User                 @relation(fields: [userId], references: [id])
-    userId              String
+    purchaseOrderLogsId String @id @default(cuid())
+
+    purchaseOrderId String
+    purchaseOrder   PurchaseOrder        @relation(fields: [purchaseOrderId], references: [purchaseOrderId])
+    action          PurchaseOrderActions
+    user            User                 @relation(fields: [userId], references: [id])
+    userId          String
 }
 
 enum PurchaseOrderActions {
@@ -159,4 +163,3 @@ model PurchaseOrderItem {
 }
 
 // TAX  0,5,7,10,16,26
-

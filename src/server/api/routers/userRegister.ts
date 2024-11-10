@@ -11,7 +11,7 @@ export const authRouter = createTRPCRouter({
   register: publicProcedure
     .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
-      const { username, email, password } = input;
+      const { username, email, password, roleId } = input;
 
       const exists = await ctx.db.user.findFirst({
         where: { email },
@@ -28,7 +28,12 @@ export const authRouter = createTRPCRouter({
       const hash = bcrypt.hashSync(password, salt);
 
       const result = await ctx.db.user.create({
-        data: { username, email, password: hash },
+        data: {
+          username,
+          email,
+          password: hash,
+          roleId: roleId || "cm3akl3ab0000mmiqtjg9xuot",
+        },
       });
 
       return {

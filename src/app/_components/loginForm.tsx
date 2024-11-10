@@ -19,20 +19,20 @@ import { Button } from "@/components/ui/button";
 const LoginForm = () => {
   // const session = await getServerAuthSession();
   const [form, setForm] = useState({
-    email: "dudu@mo.com",
-    password: "1234",
+    email: "azzie@gmail.com",
+    password: "azzieazzie",
   });
-  const signUp = api.user.register.useMutation({
-    onSuccess: (d) => {
-      console.log("DONNEEE", d);
-    },
-    onError: (e) => {
-      console.log("ERROR AZZIE", e);
-    },
-  });
+  // const signUp = api.user.register.useMutation({
+  //   onSuccess: (d) => {
+  //     console.log("DONNEEE", d);
+  //   },
+  //   onError: (e) => {
+  //     console.log("ERROR AZZIE", e);
+  //   },
+  // });
 
   const handleSubmit = async () => {
-    signIn("credentials", { ...form, callbackUrl: "/register" });
+    signIn("credentials", { ...form, callbackUrl: "/" });
   };
 
   return (
