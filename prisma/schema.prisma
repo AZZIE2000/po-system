@@ -21,11 +21,12 @@ model Role {
 }
 
 enum UserRole {
-    manager
     employee
+    manager
     projectManager
     ceo
     accountant
+    admin
 }
 
 model User {
@@ -46,11 +47,11 @@ model User {
 }
 
 model PurchaseOrder {
-    purchaseOrderId String @id @default(cuid())
-    status          Status @default(draft)
-
-    userPrepareId String
-    userPrepare   User   @relation(fields: [userPrepareId], references: [id], name: "userPrepare")
+    purchaseOrderId String  @id @default(cuid())
+    status          Status  @default(draft)
+    paid            Boolean @default(false)
+    userPrepareId   String
+    userPrepare     User    @relation(fields: [userPrepareId], references: [id], name: "userPrepare")
 
     userReviewId String
     userReview   User   @relation(fields: [userReviewId], references: [id], name: "userReview")
@@ -119,6 +120,8 @@ model PurchaseOrderDetails {
     totalAmout Float
 
     PurchaseOrderItems PurchaseOrderItem[]
+
+    PurchaseOrderInstallments PurchaseOrderInstallment[]
 }
 
 enum Currency {
@@ -133,33 +136,42 @@ enum PaymentMethod {
     bankTransfer
     cheque
     cash
-    online
+    CLIQ
 }
 
 model Project {
     projectId            String                 @id @default(cuid())
     projectName          String                 @unique
+    closed               Boolean                @default(false)
     PurchaseOrderDetails PurchaseOrderDetails[]
 }
 
 model Company {
     companyId            String                 @id @default(cuid())
-    companytName         String                 @unique
+    companyName          String                 @unique
     PurchaseOrderDetails PurchaseOrderDetails[]
 }
 
 model PurchaseOrderItem {
-    purchaseOrderItemId String   @id @default(cuid())
-    description         String?
-    priceNoTax          Float
-    priceTax            Float
-    taxAmmount          Float
-    paid                Boolean  @default(false)
-    date                DateTime
-    note                String
-
+    purchaseOrderItemId   String               @id @default(cuid())
+    description           String?
+    priceNoTax            Float
+    priceTax              Float
+    taxAmmount            Float // TAX  0,5,7,10,16,26
+    // date                  DateTime
     purchaseOrderDetailId String
     purchaseOrderDetail   PurchaseOrderDetails @relation(fields: [purchaseOrderDetailId], references: [purchaseOrderDetailId])
+}
+
+model PurchaseOrderInstallment {
+    PurchaseOrderInstallmentId String                @id @default(cuid())
+    description                String
+    amount                     Float
+    percentage                 Float
+    date                       DateTime
+    paid                       Boolean               @default(false)
+    PurchaseOrderDetail        PurchaseOrderDetails? @relation(fields: [PurchaseOrderDetailId], references: [purchaseOrderDetailId])
+    PurchaseOrderDetailId      String
 }
 
 // TAX  0,5,7,10,16,26

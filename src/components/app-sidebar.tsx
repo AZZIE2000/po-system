@@ -12,6 +12,8 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  User,
+  Users,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -54,23 +56,23 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
+      title: "Purchase Orders",
+      url: "/purchaseOrder",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Purchase Orders",
+          url: "/purchaseOrder",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "New Purchase Order",
+          url: "/purchaseOrder/new",
         },
-        {
-          title: "Settings",
-          url: "#",
-        },
+        // {
+        //   title: "Settings",
+        //   url: "#",
+        // },
       ],
     },
     {
@@ -141,9 +143,9 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      name: "Users Management",
+      url: "/manage/users",
+      icon: Users,
     },
     {
       name: "Sales & Marketing",
@@ -170,12 +172,17 @@ export function AppSidebar({
     };
   };
 }) {
-  console.log("session", session);
-
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher
+          data={{
+            name: "Home",
+            logo: GalleryVerticalEnd,
+            plan: "165 project",
+            url: "#",
+          }}
+        />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
@@ -189,5 +196,4 @@ export function AppSidebar({
   );
 }
 
-
-// you fucking learn allot in here 
+// you fucking learn allot in here

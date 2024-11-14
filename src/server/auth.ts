@@ -11,6 +11,7 @@ import bcrypt from "bcrypt";
 import { loginSchema } from "@/validation/auth";
 import { db as Prisma } from "@/server/db";
 import { env } from "@/env";
+import { Role } from "@prisma/client";
 // import { authOptions } from "@/server/auth";
 
 /**
@@ -25,9 +26,8 @@ declare module "next-auth" {
       id: string;
       username: string;
       email: string;
-
+      role: Role;
       // ...other properties
-      // role: UserRole;
     } & DefaultSession["user"];
   }
 
@@ -46,10 +46,14 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
-        const dbUser = await Prisma.user.findFirst({ where: { id: user.id } });
+        const dbUser = await Prisma.user.findFirst({
+          where: { id: user.id },
+          include: { role: true },
+        });
         token.id = user.id;
         token.email = user.email;
         token.username = dbUser?.username;
+        token.role = dbUser?.role;
       }
 
       return token;
@@ -59,6 +63,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.username = token.username as string;
         session.user.email = token.email as string;
+        session.user.role = token.role as Role;
       }
 
       return session;
@@ -88,6 +93,7 @@ export const authOptions: NextAuthOptions = {
 
         const user = await Prisma.user.findFirst({
           where: { email: cred.email },
+          include: { role: true },
         });
 
         if (!user) {
@@ -107,6 +113,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           username: user.username,
+          role: user.role,
         };
       },
     }),
