@@ -46,22 +46,6 @@ model User {
     PurchaseOrderDetails PurchaseOrderDetails[]
 }
 
-model PurchaseOrder {
-    purchaseOrderId String  @id @default(cuid())
-    status          Status  @default(draft)
-    paid            Boolean @default(false)
-    userPrepareId   String
-    userPrepare     User    @relation(fields: [userPrepareId], references: [id], name: "userPrepare")
-
-    userReviewId String
-    userReview   User   @relation(fields: [userReviewId], references: [id], name: "userReview")
-
-    userApproveId        String
-    userApprove          User                   @relation(fields: [userApproveId], references: [id], name: "userApprove")
-    PurchaseOrderDetails PurchaseOrderDetails[]
-    PurchaseOrderLogs    PurchaseOrderLogs[]
-}
-
 model PurchaseOrderLogs {
     purchaseOrderLogsId String @id @default(cuid())
 
@@ -78,6 +62,7 @@ enum PurchaseOrderActions {
     reject
     update
     complete
+    paid
 }
 
 enum Status {
@@ -90,38 +75,51 @@ enum Status {
     completed
 }
 
+model PurchaseOrder {
+    purchaseOrderId   String              @id @default(cuid())
+    status            Status              @default(draft)
+    paid              Boolean             @default(false)
+    userPrepareId     String
+    userPrepare       User                @relation(fields: [userPrepareId], references: [id], name: "userPrepare")
+    userReviewId      String
+    userReview        User                @relation(fields: [userReviewId], references: [id], name: "userReview")
+    userApproveId     String
+    userApprove       User                @relation(fields: [userApproveId], references: [id], name: "userApprove")
+    PurchaseOrderLogs PurchaseOrderLogs[]
+
+    // purchaseOrderDetails PurchaseOrderDetails @relation(name: "PurchaseOrderToPurchaseOrderDetails", fields: [purchaseOrderId], references: [purchaseOrderId])
+
+    // Additional fields...
+    PurchaseOrderDetails PurchaseOrderDetails?
+}
+
 model PurchaseOrderDetails {
-    purchaseOrderDetailId String        @id @default(cuid())
-    comment               String?
-    createdAt             DateTime      @default(now())
-    installment           Boolean       @default(false)
-    purchaseOrderId       String
-    purchaseOrder         PurchaseOrder @relation(fields: [purchaseOrderId], references: [purchaseOrderId])
-
-    projectId String
-    project   Project @relation(fields: [projectId], references: [projectId])
-
-    companyId String
-    company   Company @relation(fields: [companyId], references: [companyId])
-
-    paymentMethod PaymentMethod
-
-    nameOnCheque String?
-    iban         String?
-    cliq         String?
-
-    contactName   String?
-    contactNumber String?
-
-    projectManagerId String?
-    projectManager   User?   @relation(fields: [projectManagerId], references: [id])
-
-    currency   Currency @default(JOD)
-    totalAmout Float
-
-    PurchaseOrderItems PurchaseOrderItem[]
-
+    purchaseOrderDetailId     String                     @id @default(cuid())
+    comment                   String?
+    createdAt                 DateTime                   @default(now())
+    installment               Boolean                    @default(false)
+    projectId                 String
+    project                   Project                    @relation(fields: [projectId], references: [projectId])
+    companyId                 String
+    company                   Company                    @relation(fields: [companyId], references: [companyId])
+    paymentMethod             PaymentMethod
+    nameOnCheque              String?
+    iban                      String?
+    cliq                      String?
+    date                      DateTime?
+    contactName               String?
+    contactNumber             String?
+    projectManagerId          String?
+    projectManager            User?                      @relation(fields: [projectManagerId], references: [id])
+    currency                  Currency                   @default(JOD)
+    totalAmout                Float
+    PurchaseOrderItems        PurchaseOrderItem[]
     PurchaseOrderInstallments PurchaseOrderInstallment[]
+
+    purchaseOrderId String        @unique
+    PurchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [purchaseOrderId])
+
+    // Additional fields...
 }
 
 enum Currency {

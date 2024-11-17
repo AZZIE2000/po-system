@@ -14,7 +14,7 @@ const SimpleCard = ({
 }: {
   title?: string;
   className?: string;
-  description?: string;
+  description?: string | React.ReactNode;
   children: React.ReactNode;
 }) => {
   return (
