@@ -21,7 +21,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await getServerAuthSession();
-  console.log(session);
+
   if (!session?.user?.id) redirect("/login");
   return (
     <SidebarProvider>
