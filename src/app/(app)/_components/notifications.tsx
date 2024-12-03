@@ -82,7 +82,11 @@ export const Notifications = () => {
                   </p>
                 </div>
               ))}
-              <Button variant={"outline"} className="w-full">
+              <Button
+                variant={"outline"}
+                className="w-full"
+                onClick={() => router.push("/notifications")}
+              >
                 View All Notifications
               </Button>
             </div>
