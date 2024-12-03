@@ -32,7 +32,6 @@ const PuchaseOrderView = ({
   };
   flexable?: boolean;
 }) => {
-
   return (
     <div
       className={`${flexable ? "h-full w-[210mm]" : "min-h-[297mm] w-[210mm]"} space-y-5 border p-5`}
@@ -117,7 +116,7 @@ const PuchaseOrderView = ({
           <TableHeader>
             <TableRow>
               <TableHead>Description</TableHead>
-              <TableHead>Tax Ammount</TableHead>
+              <TableHead>Tax Amount</TableHead>
               <TableHead className="w-fit">Pretax</TableHead>
               <TableHead className="w-fit">Taxed</TableHead>
             </TableRow>
@@ -129,7 +128,7 @@ const PuchaseOrderView = ({
                   <TableCell className="w-[300px] font-medium">
                     {item.description}
                   </TableCell>
-                  <TableCell>{item.taxAmmount}</TableCell>
+                  <TableCell>{item.taxAmount}</TableCell>
                   <TableCell>{item.priceNoTax}</TableCell>
                   <TableCell>{item.priceTax}</TableCell>
                 </TableRow>

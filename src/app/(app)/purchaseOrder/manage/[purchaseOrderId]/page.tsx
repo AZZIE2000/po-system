@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { api } from "@/trpc/react";
 import Image from "next/image";
 import {
@@ -30,7 +30,9 @@ const Page = () => {
     purchaseOrderId,
   });
   const session = useSession();
-  if (!purchaseOrder) return <>loading</>;
+  console.log(purchaseOrder);
+
+  if (!purchaseOrder) return notFound();
   if (
     (purchaseOrder?.status !== "toReview" &&
       purchaseOrder?.status !== "toApprove") ||

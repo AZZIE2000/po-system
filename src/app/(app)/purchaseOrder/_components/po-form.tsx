@@ -73,7 +73,7 @@ const newItem = {
   priceTax: 0,
   purchaseOrderDetailId: "",
   purchaseOrderItemId: "",
-  taxAmmount: 0,
+  taxAmount: 0,
 };
 
 const PoForm = () => {
@@ -475,7 +475,7 @@ const PoForm = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Description</TableHead>
-                      <TableHead>Tax Ammount</TableHead>
+                      <TableHead>Tax Amount</TableHead>
                       <TableHead className="w-fit">Pretax</TableHead>
                       <TableHead className="w-fit">Taxed</TableHead>
 
@@ -500,11 +500,11 @@ const PoForm = () => {
                         </TableCell>
                         <TableCell>
                           <Select
-                            value={item.taxAmmount?.toString()}
+                            value={item.taxAmount?.toString()}
                             onValueChange={(v) => {
                               const newItem = { ...item };
                               if (!newItem) return;
-                              newItem.taxAmmount = Number(v);
+                              newItem.taxAmount = Number(v);
                               updateItem(i, newItem);
                             }}
                           >
@@ -530,7 +530,7 @@ const PoForm = () => {
                               const value = +e.target.value;
                               if (value >= 0) {
                                 const newItem = { ...item };
-                                const taxAmount = newItem.taxAmmount || 0;
+                                const taxAmount = newItem.taxAmount || 0;
                                 newItem.priceNoTax = +value.toFixed(3);
                                 newItem.priceTax = +(
                                   value * (taxAmount / 100) +
@@ -550,7 +550,7 @@ const PoForm = () => {
                               const value = +e.target.value;
                               if (value >= 0) {
                                 const newItem = { ...item };
-                                const taxAmount = newItem.taxAmmount || 0;
+                                const taxAmount = newItem.taxAmount || 0;
                                 newItem.priceTax = +value.toFixed(3);
                                 newItem.priceNoTax = +(
                                   value -

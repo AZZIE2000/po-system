@@ -7,7 +7,13 @@ import {
 } from "@/server/api/trpc";
 import { createPOSchema } from "@/validation/purchaseOrder";
 import { PurchaseOrderDetails } from "@prisma/client";
-
+export const generateNotificationText = (
+  projectName: string,
+  companyName: string,
+  username: string,
+) => {
+  return `New Purchase Order for ${projectName || ""} - ${companyName || ""} created by ${username} ready for your review.`;
+};
 export const purchaseOrderRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(z.object({ purchaseOrderId: z.string() }))
@@ -86,7 +92,39 @@ export const purchaseOrderRouter = createTRPCRouter({
         },
       });
       console.log(input.status);
-
+      if (input.status == "toReview") {
+        const pro = await ctx.db.project.findUnique({
+          where: {
+            projectId: input.projectId,
+          },
+        });
+        const com = await ctx.db.company.findUnique({
+          where: {
+            companyId: input.companyId,
+          },
+        });
+        await ctx.db.notification.create({
+          data: {
+            purchaseOrderId: po.purchaseOrderId,
+            opened: false,
+            seen: false,
+            text: generateNotificationText(
+              pro?.projectName || "",
+              com?.companyName || "",
+              ctx.session.user.username || "",
+            ),
+            userId: input.userReviewId,
+          },
+        });
+      } else {
+        await ctx.db.notification.deleteMany({
+          where: {
+            purchaseOrderId: po.purchaseOrderId,
+            userId: input.userReviewId,
+            seen: false,
+          },
+        });
+      }
       const podPayload = {
         paymentMethod: input.paymentMethod,
         cliq: input.paymentMethod === "CLIQ" ? input.cliq || null : null,
