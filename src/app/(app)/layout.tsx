@@ -15,12 +15,14 @@ import {
 } from "@/components/ui/sidebar";
 import { getServerAuthSession } from "@/server/auth";
 import { Bell } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await getServerAuthSession();
-
+  console.log(session);
+  if (!session?.user?.id) redirect("/login");
   return (
     <SidebarProvider>
       <AppSidebar session={session as any} />
