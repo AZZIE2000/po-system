@@ -23,14 +23,25 @@ import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
+  AblyProvider,
+  ChannelProvider,
+  useChannel,
+  useConnectionStateListener,
+} from "ably/react";
+
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import { Session } from "inspector/promises";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // This is sample data.
 const data = {
@@ -77,71 +88,6 @@ const data = {
         // },
       ],
     },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
   ],
   projects: [
     {
@@ -171,24 +117,35 @@ export function AppSidebar({
       username: string;
       email: string;
       avatar?: string;
+      role: { roleId: string; role: string };
     };
   };
 }) {
+  // console.log(session);
+  const router = useRouter();
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher
-          data={{
-            name: "Home",
-            logo: GalleryVerticalEnd,
-            plan: "165 project",
-            url: "#",
+        <SidebarMenuButton
+          size="lg"
+          className=""
+          onClick={() => {
+            router.push("/");
           }}
-        />
+        >
+          <Image src="/logo.png" alt="logo" width={30} height={30} />
+
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            <span className="truncate font-semibold">165 Purchase Orders</span>
+          </div>
+        </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {session.user.role.role === "admin" && (
+          <NavProjects projects={data.projects} />
+        )}
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={session?.user || data.user} />

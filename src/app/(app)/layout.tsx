@@ -13,6 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import SocketProvider from "@/providers/socket/socket-provider";
 import { getServerAuthSession } from "@/server/auth";
 import { Bell } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -38,7 +39,7 @@ export default async function RootLayout({
             </div>
           </div>
         </header>
-        {children}
+        <SocketProvider>{children}</SocketProvider>
       </SidebarInset>
     </SidebarProvider>
   );
