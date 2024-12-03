@@ -2,8 +2,11 @@ import dynamic from "next/dynamic";
 import { PoTable } from "../_components/po-table";
 import { db } from "@/server/db";
 import SimpleCard from "./_components/simple-card";
+import { getServerAuthSession } from "@/server/auth";
 
 export default async function Page() {
+  const session = await getServerAuthSession();
+
   const pos = await db.purchaseOrder.findMany({
     include: {
       PurchaseOrderDetails: {
@@ -16,6 +19,9 @@ export default async function Page() {
     },
     orderBy: {
       createdAt: "desc",
+    },
+    where: {
+      userPrepareId: session?.user?.id,
     },
   });
   return (

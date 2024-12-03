@@ -72,6 +72,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useRouter } from "next/navigation";
+import {
+  AblyProvider,
+  ChannelProvider,
+  useChannel,
+  useConnectionStateListener,
+} from "ably/react";
 const newItem = {
   date: new Date(),
   description: "",
@@ -81,7 +87,7 @@ const newItem = {
   priceTax: 0,
   purchaseOrderDetailId: "",
   purchaseOrderItemId: "",
-  taxAmmount: 0,
+  taxAmount: 0,
 };
 
 const Page = () => {
@@ -108,6 +114,7 @@ const Page = () => {
     paymentMethod: "bankTransfer",
     totalAmount: 0,
   });
+  const { channel } = useChannel("notifications");
   const { purchaseOrderId } = useParams<{ purchaseOrderId: string }>();
   const router = useRouter();
   const [items, setItems] = useState<Partial<PurchaseOrderItem>[]>([]);
@@ -167,6 +174,8 @@ const Page = () => {
         router.push(`/purchaseOrder/${po.purchaseOrderId}`);
       else {
         refetchPO();
+        if (po.status === "toReview")
+          channel.publish("po-notifi", po.userReviewId);
       }
     },
     onError: (e) => {
@@ -599,7 +608,7 @@ const Page = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Description</TableHead>
-                        <TableHead>Tax Ammount</TableHead>
+                        <TableHead>Tax Amount</TableHead>
                         <TableHead className="w-fit">Pretax</TableHead>
                         <TableHead className="w-fit">Taxed</TableHead>
 
@@ -624,11 +633,11 @@ const Page = () => {
                           </TableCell>
                           <TableCell>
                             <Select
-                              value={item.taxAmmount?.toString()}
+                              value={item.taxAmount?.toString()}
                               onValueChange={(v) => {
                                 const newItem = { ...item };
                                 if (!newItem) return;
-                                newItem.taxAmmount = Number(v);
+                                newItem.taxAmount = Number(v);
                                 updateItem(i, newItem);
                               }}
                             >
@@ -654,7 +663,7 @@ const Page = () => {
                                 const value = +e.target.value;
                                 if (value >= 0) {
                                   const newItem = { ...item };
-                                  const taxAmount = newItem.taxAmmount || 0;
+                                  const taxAmount = newItem.taxAmount || 0;
                                   newItem.priceNoTax = +value.toFixed(3);
                                   newItem.priceTax = +(
                                     value * (taxAmount / 100) +
@@ -674,7 +683,7 @@ const Page = () => {
                                 const value = +e.target.value;
                                 if (value >= 0) {
                                   const newItem = { ...item };
-                                  const taxAmount = newItem.taxAmmount || 0;
+                                  const taxAmount = newItem.taxAmount || 0;
                                   newItem.priceTax = +value.toFixed(3);
                                   newItem.priceNoTax = +(
                                     value -

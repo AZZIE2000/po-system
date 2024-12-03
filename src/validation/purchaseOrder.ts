@@ -6,7 +6,7 @@ const itemSchema = z.object({
   description: z.string().optional(),
   priceNoTax: z.number().min(0),
   priceTax: z.number().min(0),
-  taxAmmount: z.number().min(0),
+  taxAmount: z.number().min(0),
   purchaseOrderDetailId: z.string().optional(),
 });
 const installmentSchema = z.object({

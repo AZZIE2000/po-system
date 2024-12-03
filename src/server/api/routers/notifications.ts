@@ -81,7 +81,7 @@ export const notificationRouter = createTRPCRouter({
       },
     });
   }),
-  markAsViewed: protectedProcedure
+  markAsOpened: protectedProcedure
     .input(z.object({ notificationId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.notification.update({
@@ -89,7 +89,7 @@ export const notificationRouter = createTRPCRouter({
           notificationId: input.notificationId,
         },
         data: {
-          viewed: true,
+          opened: true,
           seen: true,
         },
       });

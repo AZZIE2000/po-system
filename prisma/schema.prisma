@@ -156,7 +156,7 @@ model PurchaseOrderItem {
     description           String?
     priceNoTax            Float
     priceTax              Float
-    taxAmmount            Float
+    taxAmount             Float
     // date                  DateTime
     purchaseOrderDetailId String
     purchaseOrderDetail   PurchaseOrderDetails @relation(fields: [purchaseOrderDetailId], references: [purchaseOrderDetailId])
@@ -183,7 +183,7 @@ model Notification {
     notificationId String  @id @default(cuid())
     text           String
     seen           Boolean @default(false)
-    viewed         Boolean @default(false)
+    opened         Boolean @default(false)
 
     userId String
     user   User   @relation(fields: [userId], references: [id])

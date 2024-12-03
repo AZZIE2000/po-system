@@ -18,8 +18,8 @@ export const Notifications = () => {
   const { data: unreadNotifications, refetch } =
     api.notification.getUnseenCount.useQuery();
 
-  const handleMarkAsViewed = (notificationId: string) => {
-    api.notification.markAsViewed
+  const handleMarkAsOpened = (notificationId: string) => {
+    api.notification.markAsOpened
       .useMutation({
         onSuccess: () => {
           router.push("/purchaseOrder/manage/" + notificationId);
@@ -28,15 +28,15 @@ export const Notifications = () => {
       .mutate({ notificationId });
   };
 
-  const handleMarkAllAsSeen = () => {
-    api.notification.markAllAsSeen
-      .useMutation({
-        onSuccess: () => {
-          refetch();
-        },
-      })
-      .mutate();
-  };
+  const handleMarkAllAsSeen = api.notification.markAllAsSeen.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  // const handleMarkAllAsSeen = () => {
+  //   markNotfi();
+  // };
   const { data: notifications, refetch: refetchNotifications } =
     api.notification.getLastTen.useQuery();
 
@@ -47,7 +47,7 @@ export const Notifications = () => {
         onClick={() => {
           refetchNotifications();
           if (unreadNotifications && unreadNotifications > 0) {
-            handleMarkAllAsSeen();
+            handleMarkAllAsSeen.mutate();
           }
         }}
       >
@@ -60,32 +60,31 @@ export const Notifications = () => {
           ) : null}
         </div>
       </PopoverTrigger>
-      <PopoverContent className="mr-5 max-h-[600px] w-80 overflow-y-auto">
+      <PopoverContent className="mr-5 max-h-[600px] w-96 overflow-y-auto">
         {notifications && notifications?.length > 0 ? (
           <>
             <p className="text-lg font-semibold">Notifications</p>
-            <div>
+            <div className="my-5">
               {notifications.map((notification) => (
                 <div
                   key={notification.notificationId}
-                  className={`${notification.viewed ? "bg-slate-50" : "bg-slate-300"} flex cursor-pointer flex-col gap-2 p-5`}
+                  className={`${notification.opened ? "bg-slate-50" : "bg-blue-100/50"} flex cursor-pointer flex-col gap-2 rounded-md p-3`}
                   onClick={() => {
-                    handleMarkAsViewed(notification.notificationId);
+                    handleMarkAsOpened(notification.notificationId);
                   }}
                 >
                   <div className="flex justify-between">
-                    <p>{notification.text}</p>
-                    {!notification.viewed && <Dot size={28} />}
+                    <small>{notification.text}</small>
                   </div>
                   <p className="self-end text-xs text-gray-700">
                     {format(notification.createdAt, "h:mm a")}
                   </p>
                 </div>
               ))}
-              <Button variant={"outline"} className="w-full">
-                View All Notifications
-              </Button>
             </div>
+            <Button variant={"outline"} className="w-full">
+              View All Notifications
+            </Button>
           </>
         ) : (
           <div className="flex flex-col items-center justify-center gap-10">

@@ -204,7 +204,7 @@ export function PoTable({ purchaseOrders }: { purchaseOrders: PO[] }) {
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
+                <TableCell colSpan={8} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
