@@ -176,7 +176,12 @@ export function PoTable({ purchaseOrders }: { purchaseOrders: PO[] }) {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => {}}>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              navigator.clipboard.writeText(id);
+                              toast.success("Copied to clipboard");
+                            }}
+                          >
                             Copy payment ID
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
