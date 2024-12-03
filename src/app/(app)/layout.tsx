@@ -1,12 +1,4 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -15,8 +7,8 @@ import {
 } from "@/components/ui/sidebar";
 import SocketProvider from "@/providers/socket/socket-provider";
 import { getServerAuthSession } from "@/server/auth";
-import { Bell } from "lucide-react";
 import { redirect } from "next/navigation";
+import { Notifications } from "./_components/notifications";
 
 export default async function RootLayout({
   children,
@@ -34,8 +26,8 @@ export default async function RootLayout({
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
             </div>
-            <div className="mx-4">
-              <Bell className="" />
+            <div className="mx-6">
+              <Notifications />
             </div>
           </div>
         </header>
