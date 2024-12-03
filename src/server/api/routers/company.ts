@@ -19,6 +19,23 @@ export const companyRouter = createTRPCRouter({
         },
       });
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        companyName: z.string().min(1),
+        companyId: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.company.update({
+        where: {
+          companyId: input.companyId,
+        },
+        data: {
+          companyName: input.companyName,
+        },
+      });
+    }),
 
   tstUser: protectedProcedure.query(async ({ ctx }) => {
     console.log("asd", ctx.session.user);

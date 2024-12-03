@@ -20,6 +20,8 @@ const SelectCreate = ({
   options,
   noOptionsMessage,
 }: SelectCreateI) => {
+  console.log(value);
+
   return (
     <div>
       <Label>{label || ""}</Label>

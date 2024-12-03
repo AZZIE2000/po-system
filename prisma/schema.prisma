@@ -40,10 +40,10 @@ model User {
     roleId            String
     PurchaseOrderLogs PurchaseOrderLogs[]
 
-    userPrepare          PurchaseOrder[]        @relation(name: "userPrepare")
-    userReview           PurchaseOrder[]        @relation(name: "userReview")
-    userApprove          PurchaseOrder[]        @relation(name: "userApprove")
-    PurchaseOrderDetails PurchaseOrderDetails[]
+    userPrepare   PurchaseOrder[] @relation(name: "userPrepare")
+    userReview    PurchaseOrder[] @relation(name: "userReview")
+    userApprove   PurchaseOrder[] @relation(name: "userApprove")
+    Notifications Notification[]
 }
 
 model PurchaseOrderLogs {
@@ -53,7 +53,10 @@ model PurchaseOrderLogs {
     purchaseOrder   PurchaseOrder        @relation(fields: [purchaseOrderId], references: [purchaseOrderId])
     action          PurchaseOrderActions
     user            User                 @relation(fields: [userId], references: [id])
+    comment         String               @default("")
+    log             String               @default("")
     userId          String
+    createdAt       DateTime             @default(now())
 }
 
 enum PurchaseOrderActions {
@@ -87,15 +90,15 @@ model PurchaseOrder {
     userApprove       User                @relation(fields: [userApproveId], references: [id], name: "userApprove")
     PurchaseOrderLogs PurchaseOrderLogs[]
 
-    // purchaseOrderDetails PurchaseOrderDetails @relation(name: "PurchaseOrderToPurchaseOrderDetails", fields: [purchaseOrderId], references: [purchaseOrderId])
-
-    // Additional fields...
     PurchaseOrderDetails PurchaseOrderDetails?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model PurchaseOrderDetails {
     purchaseOrderDetailId     String                     @id @default(cuid())
-    comment                   String?
+    description               String?
     createdAt                 DateTime                   @default(now())
     installment               Boolean                    @default(false)
     projectId                 String
@@ -109,17 +112,13 @@ model PurchaseOrderDetails {
     date                      DateTime?
     contactName               String?
     contactNumber             String?
-    projectManagerId          String?
-    projectManager            User?                      @relation(fields: [projectManagerId], references: [id])
     currency                  Currency                   @default(JOD)
     totalAmout                Float
     PurchaseOrderItems        PurchaseOrderItem[]
     PurchaseOrderInstallments PurchaseOrderInstallment[]
-
-    purchaseOrderId String        @unique
-    PurchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [purchaseOrderId])
-
-    // Additional fields...
+    purchaseOrderId           String                     @unique
+    PurchaseOrder             PurchaseOrder              @relation(fields: [purchaseOrderId], references: [purchaseOrderId])
+    updatedAt                 DateTime                   @updatedAt
 }
 
 enum Currency {
@@ -142,12 +141,17 @@ model Project {
     projectName          String                 @unique
     closed               Boolean                @default(false)
     PurchaseOrderDetails PurchaseOrderDetails[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Company {
     companyId            String                 @id @default(cuid())
     companyName          String                 @unique
     PurchaseOrderDetails PurchaseOrderDetails[]
+    createdAt            DateTime               @default(now())
+    updatedAt            DateTime               @updatedAt
 }
 
 model PurchaseOrderItem {
@@ -155,10 +159,13 @@ model PurchaseOrderItem {
     description           String?
     priceNoTax            Float
     priceTax              Float
-    taxAmmount            Float // TAX  0,5,7,10,16,26
+    taxAmmount            Float
     // date                  DateTime
     purchaseOrderDetailId String
     purchaseOrderDetail   PurchaseOrderDetails @relation(fields: [purchaseOrderDetailId], references: [purchaseOrderDetailId])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model PurchaseOrderInstallment {
@@ -168,8 +175,18 @@ model PurchaseOrderInstallment {
     percentage                 Float
     date                       DateTime
     paid                       Boolean               @default(false)
-    PurchaseOrderDetail        PurchaseOrderDetails? @relation(fields: [PurchaseOrderDetailId], references: [purchaseOrderDetailId])
-    PurchaseOrderDetailId      String
+    PurchaseOrderDetail        PurchaseOrderDetails? @relation(fields: [purchaseOrderDetailId], references: [purchaseOrderDetailId])
+    purchaseOrderDetailId      String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
-// TAX  0,5,7,10,16,26
+model Notification {
+    notificationId String  @id @default(cuid())
+    text           String
+    seen           Boolean @default(false)
+    viewed         Boolean @default(false)
+    userId         String
+    user           User    @relation(fields: [userId], references: [id])
+}

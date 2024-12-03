@@ -98,11 +98,11 @@ export default function Page() {
                     className="font-medium"
                     contentEditable
                     onBlur={(e) => {
-                      console.log(e.target.innerText);
-                      updateUser.mutate({
-                        id: user.id,
-                        username: e.target.innerText,
-                      });
+                      if (e.target.innerText !== user.username)
+                        updateUser.mutate({
+                          id: user.id,
+                          username: e.target.innerText,
+                        });
                     }}
                   >
                     {user.username}

@@ -23,7 +23,7 @@ const SimpleCard = ({
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent className={className || "grid grid-cols-1 gap-2"}>
+      <CardContent className={className || "grid grid-cols-1 gap-5"}>
         {children}
       </CardContent>
     </Card>
