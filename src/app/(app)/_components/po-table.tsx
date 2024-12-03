@@ -61,6 +61,8 @@ type PO = PurchaseOrder & {
 };
 export function PoTable({ purchaseOrders }: { purchaseOrders: PO[] }) {
   const [searchInput, setSearchInput] = React.useState("");
+  console.log(purchaseOrders);
+
   const router = useRouter();
   return (
     <div className="w-full">
@@ -102,17 +104,20 @@ export function PoTable({ purchaseOrders }: { purchaseOrders: PO[] }) {
               <TableHead>Project</TableHead>
               <TableHead>items</TableHead>
               <TableHead>Amount</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {purchaseOrders?.length ? (
               purchaseOrders.map((po) => {
+                if (!po.PurchaseOrderDetails) return null;
                 const id = po.purchaseOrderId,
                   description = po.PurchaseOrderDetails.description,
                   project = po.PurchaseOrderDetails.project.projectName,
-                  amount = po.PurchaseOrderDetails.totalAmout,
-                  items = po.PurchaseOrderDetails.PurchaseOrderItems,
+                  amount = po.PurchaseOrderDetails.totalAmount,
+                  currency = po.PurchaseOrderDetails.currency,
+                  status = po.status,
                   items_count =
                     po.PurchaseOrderDetails.PurchaseOrderItems.length || 0,
                   company = po.PurchaseOrderDetails.company.companyName;
@@ -153,10 +158,14 @@ export function PoTable({ purchaseOrders }: { purchaseOrders: PO[] }) {
                         {description || ""}
                       </HoverInfo>
                     </TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>{company}</TableCell>
+                    <TableCell>{project}</TableCell>
+                    <TableCell>{items_count}</TableCell>
+                    <TableCell>
+                      {amount}
+                      {currency}
+                    </TableCell>
+                    <TableCell>{status}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -178,8 +187,14 @@ export function PoTable({ purchaseOrders }: { purchaseOrders: PO[] }) {
                           >
                             View Purchase Order
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            View payment details
+                          <DropdownMenuItem
+                            onClick={() => {
+                              router.push(
+                                `/purchaseOrder/${po.purchaseOrderId}`,
+                              );
+                            }}
+                          >
+                            Edit Purchase Order
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

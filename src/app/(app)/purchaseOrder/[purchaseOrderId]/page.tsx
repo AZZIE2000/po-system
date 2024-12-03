@@ -106,7 +106,7 @@ const Page = () => {
     installment: false,
     nameOnCheque: "",
     paymentMethod: "bankTransfer",
-    totalAmout: 0,
+    totalAmount: 0,
   });
   const { purchaseOrderId } = useParams<{ purchaseOrderId: string }>();
   const router = useRouter();
@@ -286,7 +286,8 @@ const Page = () => {
       installments,
     };
     console.log(payload);
-
+    // console.log(totalAmount);
+    // return;
     createPo.mutate({
       ...(payload as any),
     });
@@ -339,9 +340,11 @@ const Page = () => {
                         handleCreatePo("toReview");
                       }}
                     >
-                      {!po.purchaseOrderId ? "Create and publish" : po.status !== "draft"
-                        ? "Update"
-                        : "Publish"}
+                      {!po.purchaseOrderId
+                        ? "Create and publish"
+                        : po.status !== "draft"
+                          ? "Update"
+                          : "Publish"}
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />

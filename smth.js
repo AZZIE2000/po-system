@@ -23,7 +23,7 @@
       contactName: null,
       contactNumber: null,
       currency: "JOD",
-      totalAmout: 0,
+      totalAmount: 0,
       purchaseOrderId: "cm3udrdi80071yn6umokywupm",
       updatedAt: new Date("2024-11-23T16:44:17.000Z"),
       company: {
@@ -77,7 +77,7 @@
       contactName: "dasd",
       contactNumber: "99991111",
       currency: "JOD",
-      totalAmout: 0,
+      totalAmount: 0,
       purchaseOrderId: "cm3t8fct4000vyn6ur5dry3cx",
       updatedAt: new Date("2024-11-23T16:16:10.000Z"),
       company: {
@@ -136,7 +136,7 @@
       contactName: "asdas",
       contactNumber: "341412",
       currency: "JOD",
-      totalAmout: 0,
+      totalAmount: 0,
       purchaseOrderId: "cm3rv3q6s000be7ne8fgp4jrq",
       updatedAt: new Date("2024-11-22T21:05:37.000Z"),
       company: {

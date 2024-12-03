@@ -115,7 +115,7 @@ const Page = () => {
               <TableRow>
                 <TableCell colSpan={3}>Total</TableCell>
                 <TableCell>
-                  {purchaseOrder?.PurchaseOrderDetails?.totalAmout}
+                  {purchaseOrder?.PurchaseOrderDetails?.totalAmount}
                 </TableCell>
               </TableRow>
             </TableFooter>

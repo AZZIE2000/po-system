@@ -101,7 +101,7 @@ export const purchaseOrderRouter = createTRPCRouter({
         companyId: input.companyId || "",
         date: input.date,
         installment: input.installment,
-        totalAmout: +input.totalAmout,
+        totalAmount: +input.totalAmount,
         purchaseOrderId: po.purchaseOrderId,
         projectId: input.projectId || "",
       };

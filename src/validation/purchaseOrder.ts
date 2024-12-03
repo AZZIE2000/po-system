@@ -57,7 +57,7 @@ export const createPOSchema = z.object({
     PaymentMethod.cash,
     PaymentMethod.cheque,
   ]),
-  totalAmout: z.number().min(0),
+  totalAmount: z.number().min(0),
   paid: z.boolean(),
   items: z.array(itemSchema).optional().default([]),
   installments: z.array(installmentSchema).optional().default([]),

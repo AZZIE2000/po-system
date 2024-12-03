@@ -92,7 +92,7 @@ const PoForm = () => {
     companyId: "",
     companyName: "",
     cliq: "",
-    comment: "",
+    description: "",
     contactName: "",
     contactNumber: "",
     currency: "JOD",
@@ -103,9 +103,10 @@ const PoForm = () => {
     status: "draft",
     installment: false,
     nameOnCheque: "",
+
     paymentMethod: "bankTransfer",
-    projectManagerId: "",
-    totalAmout: 0,
+    // projectManagerId: "",
+    totalAmount: 0,
   });
   const [items, setItems] = useState<Partial<PurchaseOrderItem>[]>([]);
   const [installments, setInstallments] = useState<
