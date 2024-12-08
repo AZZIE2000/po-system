@@ -37,7 +37,7 @@ export default function Page() {
   const allData = data?.pages.flatMap((page) => page.notifications) ?? [];
 
   const handleMarkAsViewed = (notificationId: string) => {
-    api.notification.markAsViewed
+    api.notification.markAsOpened
       .useMutation({
         onSuccess: () => {
           router.push("/purchaseOrder/manage/" + notificationId);
@@ -51,14 +51,13 @@ export default function Page() {
       {allData.map((notification) => (
         <div
           key={notification.notificationId}
-          className={`${notification.viewed ? "bg-slate-50" : "bg-slate-300"} flex cursor-pointer flex-col gap-2 p-5`}
+          className={`${notification.opened ? "" : "bg-blue-100/50"} flex cursor-pointer flex-col gap-2 border p-3`}
           onClick={() => {
             handleMarkAsViewed(notification.notificationId);
           }}
         >
           <div className="flex justify-between">
-            <p>{notification.text}</p>
-            {!notification.viewed && <Dot size={28} />}
+            <small>{notification.text}</small>
           </div>
           <p className="self-end text-xs text-gray-700">
             {format(notification.createdAt, "h:mm a")}

@@ -20,16 +20,12 @@ export default function Page() {
     console.log("Connected to Ably!");
   });
 
-  const { channel, ably } = useChannel(
-    "notifications",
-    "po-notifi",
-    (message) => {
-      console.log(message);
+  const { channel } = useChannel("notifications", "po-notifi", (message) => {
+    console.log(message);
 
-      if (session.data?.user.id === message.data) toast(message.data);
-    },
-  );
-  console.log(ably.channels);
+    if (session.data?.user.id === message.data) toast(message.data);
+  });
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="grid auto-rows-min gap-4 md:grid-cols-3">

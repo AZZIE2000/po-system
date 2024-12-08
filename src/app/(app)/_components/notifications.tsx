@@ -12,21 +12,23 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Notification } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { useChannel } from "ably/react";
+import { useSession } from "next-auth/react";
 
 export const Notifications = () => {
   const router = useRouter();
+  const session = useSession();
   const { data: unreadNotifications, refetch } =
     api.notification.getUnseenCount.useQuery();
 
-  const handleMarkAsOpened = (notificationId: string) => {
-    api.notification.markAsOpened
-      .useMutation({
-        onSuccess: () => {
-          router.push("/purchaseOrder/manage/" + notificationId);
-        },
-      })
-      .mutate({ notificationId });
-  };
+  const handleMarkAsOpened = api.notification.markAsOpened.useMutation({
+    onSuccess: () => {
+      // router.push("/purchaseOrder/manage/" + notificationId);
+    },
+  });
+
+  // const handleMarkAsOpened = (notificationId: string) => {
+  // };
 
   const handleMarkAllAsSeen = api.notification.markAllAsSeen.useMutation({
     onSuccess: () => {
@@ -34,9 +36,10 @@ export const Notifications = () => {
     },
   });
 
-  // const handleMarkAllAsSeen = () => {
-  //   markNotfi();
-  // };
+  const { channel } = useChannel("notifications", "po-notifi", (message) => {
+    console.log(message);
+    if (session.data?.user.id === message.data) refetch();
+  });
   const { data: notifications, refetch: refetchNotifications } =
     api.notification.getLastTen.useQuery();
 
@@ -64,13 +67,18 @@ export const Notifications = () => {
         {notifications && notifications?.length > 0 ? (
           <>
             <p className="text-lg font-semibold">Notifications</p>
-            <div className="my-5">
+            <div className="my-5 space-y-2">
               {notifications.map((notification) => (
                 <div
                   key={notification.notificationId}
-                  className={`${notification.opened ? "bg-slate-50" : "bg-blue-100/50"} flex cursor-pointer flex-col gap-2 rounded-md p-3`}
+                  className={`${notification.opened ? "" : "bg-blue-100/50"} flex cursor-pointer flex-col gap-2 rounded-md border p-3`}
                   onClick={() => {
-                    handleMarkAsOpened(notification.notificationId);
+                    handleMarkAsOpened.mutate({
+                      notificationId: notification.notificationId,
+                    });
+                    router.push(
+                      "/purchaseOrder/manage/" + notification.purchaseOrderId,
+                    );
                   }}
                 >
                   <div className="flex justify-between">
