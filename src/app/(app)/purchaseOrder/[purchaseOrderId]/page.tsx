@@ -122,7 +122,7 @@ const Page = () => {
       taxAmount: 0,
       priceNoTax: 0,
       priceTax: 0,
-      description: "item 0",
+      description: "item 1",
     },
   ]);
   const [installments, setInstallments] = useState<
@@ -608,7 +608,15 @@ const Page = () => {
                 <SimpleCard title="Items">
                   <div className="flex w-full justify-end">
                     <Button
-                      onClick={() => setItems([...items, newItem])}
+                      onClick={() =>
+                        setItems([
+                          ...items,
+                          {
+                            ...newItem,
+                            description: `item ${items.length + 1}`,
+                          },
+                        ])
+                      }
                       className="flex items-center gap-1"
                     >
                       Add Item
