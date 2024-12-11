@@ -12,11 +12,12 @@ import {
 } from "ably/react";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export default function Page() {
   const session = useSession(); // to get the client auth
 
-  
+  redirect("/purchaseOrder");
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
