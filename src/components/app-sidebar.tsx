@@ -22,12 +22,6 @@ import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
-import {
-  AblyProvider,
-  ChannelProvider,
-  useChannel,
-  useConnectionStateListener,
-} from "ably/react";
 
 import {
   Sidebar,
@@ -42,7 +36,13 @@ import { useSession } from "next-auth/react";
 import { Session } from "inspector/promises";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
+import {
+  AblyProvider,
+  ChannelProvider,
+  useChannel,
+  useConnectionStateListener,
+} from "ably/react";
+import { toast } from "react-toastify";
 // This is sample data.
 const data = {
   user: {
@@ -109,20 +109,19 @@ const data = {
 };
 
 export function AppSidebar({
-  session,
   ...props
-}: React.ComponentProps<typeof Sidebar> & {
-  session: {
-    user: {
-      username: string;
-      email: string;
-      avatar?: string;
-      role: { roleId: string; role: string };
-    };
-  };
-}) {
-  // console.log(session);
+}: React.ComponentProps<typeof Sidebar> & {}) {
+  const session = useSession();
   const router = useRouter();
+  useConnectionStateListener("connected", () => {
+    console.log("Connected to Ably!");
+  });
+
+  useChannel("notifications", "po-notifi", (message) => {
+    console.log("message ++++++ ", message);
+    const [uid, txt] = message.data.split("---");
+    if (session?.data?.user.id === uid) toast(txt);
+  });
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -142,13 +141,12 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {session.user.role.role === "admin" && (
+        {session?.data?.user.role.role === "admin" && (
           <NavProjects projects={data.projects} />
         )}
-        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={session?.user || data.user} />
+        <NavUser user={session?.data?.user || data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

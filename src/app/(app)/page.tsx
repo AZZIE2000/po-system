@@ -16,15 +16,7 @@ import { useSession } from "next-auth/react";
 export default function Page() {
   const session = useSession(); // to get the client auth
 
-  useConnectionStateListener("connected", () => {
-    console.log("Connected to Ably!");
-  });
-
-  const { channel } = useChannel("notifications", "po-notifi", (message) => {
-    console.log(message);
-
-    if (session.data?.user.id === message.data) toast(message.data);
-  });
+  
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -36,7 +28,7 @@ export default function Page() {
       <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
         <Button
           onClick={() => {
-            channel.publish("first", "Here is my first message!");
+            // channel.publish("first", "Here is my first message!");
           }}
         >
           send

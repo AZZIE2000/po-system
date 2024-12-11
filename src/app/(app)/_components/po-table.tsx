@@ -52,6 +52,11 @@ import {
   Project,
 } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@/components/ui/hover-card";
 type PO = PurchaseOrder & {
   PurchaseOrderDetails: PurchaseOrderDetails & {
     company: Company;
@@ -98,10 +103,10 @@ export function PoTable({ purchaseOrders }: { purchaseOrders: PO[] }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Description</TableHead>
+              {/* <TableHead>ID</TableHead> */}
               <TableHead>Company</TableHead>
               <TableHead>Project</TableHead>
+              <TableHead>Description</TableHead>
               <TableHead>items</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Status</TableHead>
@@ -123,7 +128,7 @@ export function PoTable({ purchaseOrders }: { purchaseOrders: PO[] }) {
                   company = po.PurchaseOrderDetails.company.companyName;
                 return (
                   <TableRow key={po.purchaseOrderId}>
-                    <TableCell>
+                    {/* <TableCell>
                       <HoverInfo
                         button={
                           <span
@@ -139,27 +144,31 @@ export function PoTable({ purchaseOrders }: { purchaseOrders: PO[] }) {
                       >
                         Copy to clipboard
                       </HoverInfo>
-                    </TableCell>
-                    <TableCell>
-                      <HoverInfo
-                        disabled={
-                          !description || description.length < 10
-                            ? false
-                            : undefined
-                        }
-                        button={
-                          <span className="">
-                            {description
-                              ? description.slice(0, 10) + "..."
-                              : "N/A"}
-                          </span>
-                        }
-                      >
-                        {description || ""}
-                      </HoverInfo>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>{company}</TableCell>
                     <TableCell>{project}</TableCell>
+                    <TableCell>
+                      <HoverCard>
+                        <HoverCardTrigger>
+                          {description
+                            ? description.slice(0, 10) + "..."
+                            : "N/A"}
+                        </HoverCardTrigger>
+                        <HoverCardContent className="w-80">
+                          {description || ""}
+                        </HoverCardContent>
+                      </HoverCard>
+                      {/* <HoverInfo
+                        // disabled={
+                        //   !description || description.length < 10
+                        //     ? false
+                        //     : undefined
+                        // }
+                        button={<span className=""></span>}
+                      >
+                        {description || ""}
+                      </HoverInfo> */}
+                    </TableCell>
                     <TableCell>{items_count}</TableCell>
                     <TableCell>
                       {amount}

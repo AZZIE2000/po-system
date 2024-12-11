@@ -1,3 +1,4 @@
+"use client";
 import { api } from "@/trpc/react";
 import { format } from "date-fns";
 import { Dot } from "lucide-react";

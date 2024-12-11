@@ -475,9 +475,9 @@ const PoForm = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Description</TableHead>
+                      <TableHead className="w-fit">Amount</TableHead>
                       <TableHead>Tax Amount</TableHead>
-                      <TableHead className="w-fit">Pretax</TableHead>
-                      <TableHead className="w-fit">Taxed</TableHead>
+                      <TableHead className="w-fit">Total</TableHead>
 
                       <TableHead>Actions</TableHead>
                     </TableRow>
@@ -498,6 +498,33 @@ const PoForm = () => {
                             }}
                           />
                         </TableCell>
+
+                        <TableCell>
+                          <Input
+                            // onFocus={(e) => {
+                            //   setTimeout(() => {
+                            //     e.target.select();
+                            //   }, 10);
+                            // }}
+                            type="number"
+                            className="w-fit"
+                            value={item.priceNoTax}
+                            onChange={(e) => {
+                              const value = +e.target.value;
+                              if (value >= 0) {
+                                const newItem = { ...item };
+                                const taxAmount = newItem.taxAmount || 0;
+                                newItem.priceNoTax = +value.toFixed(3);
+                                newItem.priceTax = +(
+                                  value * (taxAmount / 100) +
+                                  value
+                                ).toFixed(3);
+                                updateItem(i, newItem);
+                              }
+                            }}
+                          />
+                        </TableCell>
+
                         <TableCell>
                           <Select
                             value={item.taxAmount?.toString()}
@@ -520,26 +547,6 @@ const PoForm = () => {
                               <SelectItem value="26">26%</SelectItem>
                             </SelectContent>
                           </Select>
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            type="number"
-                            className="w-fit"
-                            value={item.priceNoTax}
-                            onChange={(e) => {
-                              const value = +e.target.value;
-                              if (value >= 0) {
-                                const newItem = { ...item };
-                                const taxAmount = newItem.taxAmount || 0;
-                                newItem.priceNoTax = +value.toFixed(3);
-                                newItem.priceTax = +(
-                                  value * (taxAmount / 100) +
-                                  value
-                                ).toFixed(3);
-                                updateItem(i, newItem);
-                              }
-                            }}
-                          />
                         </TableCell>
                         <TableCell className="w-fit">
                           <Input

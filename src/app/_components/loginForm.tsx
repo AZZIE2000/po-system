@@ -19,8 +19,8 @@ import { Button } from "@/components/ui/button";
 const LoginForm = () => {
   // const session = await getServerAuthSession();
   const [form, setForm] = useState({
-    email: "azzie@gmail.com",
-    password: "azzieazzie",
+    email: "admin@po.com",
+    password: "1P@ssw0rd",
   });
   // const signUp = api.user.register.useMutation({
   //   onSuccess: (d) => {

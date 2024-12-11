@@ -170,12 +170,17 @@ const Page = () => {
 
   const createPo = api.purchaseOrder.create.useMutation({
     onSuccess: (po) => {
+      console.log("po po po ", po);
+
       if (purchaseOrderId === "new")
-        router.push(`/purchaseOrder/${po.purchaseOrderId}`);
+        router.push(`/purchaseOrder/${po.po.purchaseOrderId}`);
       else {
         refetchPO();
-        if (po.status === "toReview")
-          channel.publish("po-notifi", po.userReviewId);
+        if (po.po.status === "toReview" && po.notficationText)
+          channel.publish(
+            "po-notifi",
+            `${po.po.userReviewId}---${po.notficationText}`,
+          );
       }
     },
     onError: (e) => {
@@ -608,9 +613,9 @@ const Page = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Description</TableHead>
+                        <TableHead className="">Amount</TableHead>
                         <TableHead>Tax Amount</TableHead>
-                        <TableHead className="w-fit">Pretax</TableHead>
-                        <TableHead className="w-fit">Taxed</TableHead>
+                        <TableHead className="">Total</TableHead>
 
                         <TableHead>Actions</TableHead>
                       </TableRow>
@@ -631,33 +636,11 @@ const Page = () => {
                               }}
                             />
                           </TableCell>
-                          <TableCell>
-                            <Select
-                              value={item.taxAmount?.toString()}
-                              onValueChange={(v) => {
-                                const newItem = { ...item };
-                                if (!newItem) return;
-                                newItem.taxAmount = Number(v);
-                                updateItem(i, newItem);
-                              }}
-                            >
-                              <SelectTrigger className="w-fit">
-                                <SelectValue placeholder="Select Tax" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="0">0%</SelectItem>
-                                <SelectItem value="5">5%</SelectItem>
-                                <SelectItem value="7">7%</SelectItem>
-                                <SelectItem value="10">10%</SelectItem>
-                                <SelectItem value="16">16%</SelectItem>
-                                <SelectItem value="26">26%</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </TableCell>
+
                           <TableCell>
                             <Input
                               type="number"
-                              className="w-fit"
+                              className=""
                               value={item.priceNoTax}
                               onChange={(e) => {
                                 const value = +e.target.value;
@@ -673,6 +656,29 @@ const Page = () => {
                                 }
                               }}
                             />
+                          </TableCell>
+                          <TableCell>
+                            <Select
+                              value={item.taxAmount?.toString()}
+                              onValueChange={(v) => {
+                                const newItem = { ...item };
+                                if (!newItem) return;
+                                newItem.taxAmount = Number(v);
+                                updateItem(i, newItem);
+                              }}
+                            >
+                              <SelectTrigger className="">
+                                <SelectValue placeholder="Select Tax" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="0">0%</SelectItem>
+                                <SelectItem value="5">5%</SelectItem>
+                                <SelectItem value="7">7%</SelectItem>
+                                <SelectItem value="10">10%</SelectItem>
+                                <SelectItem value="16">16%</SelectItem>
+                                <SelectItem value="26">26%</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </TableCell>
                           <TableCell className="w-fit">
                             <Input
@@ -823,7 +829,7 @@ const Page = () => {
                             {/* <TableHead className="w-[100px]">description</TableHead> */}
                             <TableHead>Description</TableHead>
                             <TableHead>amount</TableHead>
-                            <TableHead>percentage</TableHead>
+                            <TableHead>percentage/total</TableHead>
                             <TableHead>Due Date</TableHead>
                             <TableHead>Actions</TableHead>
                           </TableRow>
@@ -898,7 +904,7 @@ const Page = () => {
                             }
                           }}
                         /> */}
-                                {installment.percentage}
+                                {installment.percentage}%
                               </TableCell>
 
                               <TableCell>

@@ -19,6 +19,26 @@ import {
   PurchaseOrderDetails,
   PurchaseOrderItem,
 } from "@prisma/client";
+const formatDate = (dateInput: Date) => {
+  if (!dateInput) return "Invalid Date";
+
+  // Check if the input is already a Date object
+  const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+
+  if (isNaN(date.getTime())) return ""; // Handle invalid dates
+
+  const options = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  };
+
+  return date.toLocaleString("en-US", options as any).replace(",", "");
+};
+
 const PuchaseOrderView = ({
   purchaseOrder,
   flexable = false,
@@ -39,8 +59,8 @@ const PuchaseOrderView = ({
       <div className="flex items-center justify-between">
         <Image src="/logo.png" alt="logo" width={100} height={300} />
         <div>
-          <small>{purchaseOrder?.purchaseOrderId}</small>
-          <div>{purchaseOrder?.createdAt.toDateString()}</div>
+          {/* <small>{purchaseOrder?.purchaseOrderId}</small> */}
+          <div>{formatDate(new Date(purchaseOrder?.createdAt)) || ""}</div>
         </div>
       </div>
       <hr className="my-4" />
