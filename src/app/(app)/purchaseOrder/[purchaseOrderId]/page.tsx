@@ -671,7 +671,7 @@ const Page = () => {
                                 const newItem = { ...item };
                                 if (!newItem) return;
                                 newItem.taxAmount = Number(v);
-                                if (Number(v)) {
+                                if (newItem.priceNoTax) {
                                   newItem.priceTax = +(
                                     newItem.priceNoTax * (Number(v) / 100) +
                                     newItem.priceNoTax
