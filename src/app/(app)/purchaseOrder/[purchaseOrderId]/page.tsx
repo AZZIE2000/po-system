@@ -117,7 +117,14 @@ const Page = () => {
   const { channel } = useChannel("notifications");
   const { purchaseOrderId } = useParams<{ purchaseOrderId: string }>();
   const router = useRouter();
-  const [items, setItems] = useState<Partial<PurchaseOrderItem>[]>([]);
+  const [items, setItems] = useState<Partial<PurchaseOrderItem>[]>([
+    {
+      taxAmount: 0,
+      priceNoTax: 0,
+      priceTax: 0,
+      description: "item 0",
+    },
+  ]);
   const [installments, setInstallments] = useState<
     Partial<PurchaseOrderInstallment>[]
   >([]);
@@ -664,6 +671,12 @@ const Page = () => {
                                 const newItem = { ...item };
                                 if (!newItem) return;
                                 newItem.taxAmount = Number(v);
+                                if (Number(v)) {
+                                  newItem.priceTax = +(
+                                    newItem.priceNoTax * (Number(v) / 100) +
+                                    newItem.priceNoTax
+                                  ).toFixed(3);
+                                }
                                 updateItem(i, newItem);
                               }}
                             >

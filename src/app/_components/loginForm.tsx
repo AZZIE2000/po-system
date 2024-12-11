@@ -34,7 +34,7 @@ const LoginForm = () => {
   const handleSubmit = async () => {
     signIn("credentials", {
       ...form,
-      callbackUrl: "/purchaseOrder",
+      callbackUrl: "/purchaseOrder/new",
     });
   };
 
